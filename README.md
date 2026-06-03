@@ -53,3 +53,5 @@ npm install
 npm run dev
 ```
 *La UI estará disponible en: `http://localhost:5173`*
+
+## Cuadro Kanban
