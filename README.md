@@ -56,5 +56,5 @@ npm run dev
 
 ## Cuadro Kanban
 ```bash
-Link de cuadro Kanban: @blank
+Link de cuadro Kanban:
 ```
