@@ -1,8 +1,8 @@
-from fastapi import FastAPI
+from typing import Optional
+from fastapi import FastAPI, Depends, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from app.controllers.auth_controller import router as auth_router
 from app.controllers.republica_controller import router as republica_router
-from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db, engine, Base
 from app.models.usuario_model import Usuario
@@ -23,14 +23,24 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/api/auth")
 app.include_router(republica_router, prefix="/api")
 
-@app.get("/")
-def read_root():
-    return {"status": "ok", "message": "API está encendida y lista para el login demo."}
-Base.metadata.create_all(bind=engine)
+def require_status_header(x_api_key: Optional[str] = Header(None, alias="X-API-KEY")):
+    if x_api_key != "demo-health-key":
+        raise HTTPException(status_code=401, detail="X-API-KEY inválido")
+    return x_api_key
+
+@app.get("/api/status")
+def read_status(api_key: str = Depends(require_status_header)):
+    return {
+        "status": "ok",
+        "api": "RepOP",
+        "message": "Backend conectado con frontend via header basico",
+    }
 
 @app.get("/")
 def read_root():
-    return {"status": "ok", "message": "API de Repúblicas encendida"}
+    return {"status": "ok", "message": "API está encendida y lista para el login demo."}
+
+Base.metadata.create_all(bind=engine)
 
 @app.get("/api/check-db")
 def check_db(db: Session = Depends(get_db)):

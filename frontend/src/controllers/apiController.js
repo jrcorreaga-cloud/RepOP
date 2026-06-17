@@ -17,3 +17,20 @@ export const loginDemo = async (credentials) => {
 
     return data;
 };
+
+export const checkStatus = async () => {
+    const res = await fetch(`${API_BASE_URL}/api/status`, {
+        method: "GET",
+        headers: {
+            "X-API-KEY": "demo-health-key",
+        },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        throw new Error(data.detail ?? "No se pudo verificar el estado del backend");
+    }
+
+    return data;
+};

@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { loginDemo } from "../controllers/apiController";
+import { useEffect, useMemo, useState } from "react";
+import { loginDemo, checkStatus } from "../controllers/apiController";
 import "../styles/login.css";
 
 export default function HomeView() {
@@ -18,6 +18,19 @@ export default function HomeView() {
     });
     const [status, setStatus] = useState({ type: "idle", message: "" });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [backendStatus, setBackendStatus] = useState("Verificando conexión con backend...");
+
+    useEffect(() => {
+        const checkBackend = async () => {
+            try {
+                const response = await checkStatus();
+                setBackendStatus(response.message);
+            } catch (error) {
+                setBackendStatus("No se pudo conectar al backend");
+            }
+        };
+        checkBackend();
+    }, []);
 
     const isUfopEmail = useMemo(
         () => registerData.email.trim().toLowerCase().endsWith("@aluno.ufop.edu.br"),
@@ -96,6 +109,10 @@ export default function HomeView() {
                     </div>
                     <p className="hero-description">Acceso simple para entrar o crear una cuenta, con un diseño claro y sin ruido visual.</p>
                 </div>
+            </section>
+
+            <section className="backend-check">
+                <p>Estado del backend: {backendStatus}</p>
             </section>
 
             <section className="login-card">
