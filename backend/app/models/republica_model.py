@@ -14,3 +14,23 @@ class LoginResponse(BaseModel):
 	token_type: str
 	user: dict
 	message: str
+from sqlalchemy import Column, Integer, String, Numeric, Enum, Text, ForeignKey, DateTime, func
+from sqlalchemy.orm import relationship
+from app.core.database import Base
+
+class Republica(Base):
+    __tablename__ = "republica"
+
+    id_republica = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    id_duenho = Column(Integer, ForeignKey("usuario.id_usuario"), unique=True, nullable=False)
+    nombre_republica = Column(String(100), nullable=False)
+    direccion = Column(String(255), nullable=False)
+    precio = Column(Numeric(10, 2), nullable=False)
+    num_habitaciones = Column(Integer, nullable=False)
+    genero_permitido = Column(Enum('solo hombres', 'solo mujeres', 'mixto'), nullable=False)
+    foto_url = Column(String(255), nullable=True)
+    descripcion = Column(Text, nullable=True)
+    fecha_creacion = Column(DateTime, server_default=func.current_timestamp())
+
+    # Relación con usuario (dueño)
+    duenho = relationship("Usuario")
