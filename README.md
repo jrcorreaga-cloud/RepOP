@@ -1,41 +1,51 @@
-# 🏘️ Buscador de Repúblicas en Ouro Preto (Nombre por definir)
+# 🏘️ RepOP — Buscador de Repúblicas em Ouro Preto
 
-## 📖 Descripción del Proyecto
+## 📖 Descrição do Projeto
 
-Este proyecto es una plataforma web (actualmente en desarrollo) enfocada en centralizar y facilitar la búsqueda de alojamiento estudiantil y particular en la histórica ciudad universitaria de Ouro Preto. La aplicación sirve como un puente directo entre personas que necesitan un lugar donde morar y las repúblicas que tienen cupos disponibles.
+O **RepOP** é uma plataforma web (atualmente em desenvolvimento) focada em centralizar e facilitar a busca por moradia estudantil e particular na histórica cidade universitária de Ouro Preto. A aplicação serve como uma ponte direta entre pessoas que precisam de um lugar para morar e as repúblicas que possuem vagas disponíveis.
 
-## ⚠️ El Problema
+## ⚠️ O Problema
 
-Encontrar una "república" (residencia de estudiantes) ideal en Ouro Preto suele ser un proceso caótico. Históricamente, la información se dispersa en grupos de redes sociales, carteles en la calle o el boca a boca. Esto genera:
-- **Para el buscador:** Estrés, pérdida de tiempo y dificultad para comparar opciones (precios, reglas, ubicación).
-- **Para los dueños/moradores:** Dificultad para visibilizar su república y llenar rápidamente los cuartos o vacantes (vagas) libres, lo que puede afectar la economía de la casa.
+Encontrar uma república ideal em Ouro Preto costuma ser um processo caótico. Historicamente, as informações se dispersam em grupos de redes sociais, cartazes nas ruas ou pelo boca a boca. Isso gera:
 
-## ✨ Flujo y Características Principales
+- **Para o buscador:** Estresse, perda de tempo e dificuldade para comparar opções (preços, regras, localização).
+- **Para os donos/moradores:** Dificuldade para divulgar sua república e preencher rapidamente os quartos ou vagas disponíveis, o que pode impactar a economia da casa.
 
-1. **Para los Usuarios (Buscadores):**
-   - Registro y creación de cuenta en la plataforma.
-   - Búsqueda y filtrado de repúblicas disponibles en Ouro Preto.
-   - Visualización de información clave (fotos, reglas, costos y vagas disponibles).
+## ✨ Fluxo e Principais Funcionalidades
 
-2. **Para Dueños / Representantes de Repúblicas:**
-   - Registro como administrador de una república.
-   - Perfil de la casa: posibilidad de darse a conocer, listar características y ambiente.
-   - **Gestión de vagas:** Publicar en tiempo real si tienen cuartos o cupos habilitados para atraer inquilinos de manera rápida.
+1. **Para os Usuários (Buscadores):**
+   - Cadastro e criação de conta na plataforma.
+   - Busca e filtragem de repúblicas disponíveis em Ouro Preto.
+   - Visualização de informações essenciais (fotos, regras, custos e vagas disponíveis).
 
-## 🛠️ Stack Tecnológico (Arquitectura MVC)
+2. **Para Donos / Representantes de Repúblicas:**
+   - Cadastro como administrador de uma república.
+   - Perfil da casa: possibilidade de se apresentar, listar características e ambiente.
+   - **Gestão de vagas:** Publicar em tempo real se há quartos ou vagas disponíveis para atrair inquilinos rapidamente.
+
+## 🗂️ Quadro Kanban
+
+O acompanhamento das tarefas e o progresso do projeto são gerenciados no quadro Kanban abaixo:
+
+🔗 **[Acessar o Kanban do RepOP](https://github.com/users/jrcorreaga-cloud/projects/2)**
+
+> _Substitua o link acima pelo endereço real do seu quadro (Trello, Notion, Jira, etc.)._
+
+## 🛠️ Stack Tecnológico (Arquitetura MVC)
 
 - **Backend:** FastAPI (Python)
 - **Frontend:** React + Vite (JavaScript)
-- **Base de Datos:** MySQL
-- **Contenedores:** Docker y Docker Compose para facilitar despliegues y pruebas.
+- **Banco de Dados:** MySQL
+- **Contêineres:** Docker e Docker Compose para facilitar deploys e testes.
 
 ---
 
-## 🚀 Guía de Inicio Rápido (Localhost)
+## 🚀 Guia de Início Rápido (Localhost)
 
-Para levantar el proyecto en tu máquina local:
+Para rodar o projeto na sua máquina local:
 
-### 1. Levantar el Backend (FastAPI)
+### 1. Subir o Backend (FastAPI)
+
 ```bash
 cd backend
 python3 -m venv venv
@@ -43,13 +53,17 @@ source venv/bin/activate
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
-*La API estará documentada y corriendo en: `http://localhost:8000/docs`*
 
-### 2. Levantar el Frontend (React)
-Abre otra terminal y ejecuta:
+_A API estará documentada e rodando em: `http://localhost:8000/docs`_
+
+### 2. Subir o Frontend (React)
+
+Abra outro terminal e execute:
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-*La UI estará disponible en: `http://localhost:5173`*
+
+_A interface estará disponível em: `http://localhost:5173`_
