@@ -65,3 +65,23 @@ export const checkStatus = async () => {
         handleAxiosError(err);
     }
 };
+
+/** Obtiene los datos completos del perfil del usuario autenticado. */
+export const getUserProfile = async () => {
+    try {
+        const res = await api.get("/api/auth/me");
+        return res.data;
+    } catch (err) {
+        handleAxiosError(err);
+    }
+};
+
+/** Actualiza los campos editables del perfil (nombre, teléfono). */
+export const updateUserProfile = async (profileData) => {
+    try {
+        const res = await api.put("/api/auth/profile", profileData);
+        return res.data;
+    } catch (err) {
+        handleAxiosError(err);
+    }
+};

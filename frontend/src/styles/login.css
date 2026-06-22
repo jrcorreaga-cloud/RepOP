@@ -885,3 +885,287 @@ input {
     justify-self: stretch;
   }
 }
+
+/* ═══════════════════════════════════════════════
+   PROFILE – Meu Perfil (vista expandida)
+   ═══════════════════════════════════════════════ */
+
+/* ── Hero Card ── */
+.profile-hero-card {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  border: 1px solid rgba(207, 217, 230, 0.95);
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(15, 118, 110, 0.07), rgba(255, 255, 255, 0.96));
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+  animation: viewFadeIn 240ms ease;
+}
+
+.profile-hero-card__left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.profile-hero-card__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  box-shadow: 0 8px 24px rgba(15, 118, 110, 0.25);
+  transition: transform 200ms ease;
+}
+
+.profile-hero-card:hover .profile-hero-card__avatar {
+  transform: scale(1.04);
+}
+
+.profile-hero-card__info {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.profile-hero-card__info strong {
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+.profile-hero-card__email {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.profile-hero-card__badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+}
+
+/* ── Badges ── */
+.profile-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.profile-badge--role {
+  background: rgba(15, 118, 110, 0.1);
+  border: 1px solid rgba(15, 118, 110, 0.2);
+  color: var(--primary-strong);
+}
+
+.profile-badge--ufop {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: var(--success);
+}
+
+/* ── Profile Buttons ── */
+.profile-btn {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.75rem 1.25rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+
+.profile-btn--edit {
+  background: #fff;
+  color: var(--text);
+}
+
+.profile-btn--edit:hover {
+  border-color: rgba(15, 118, 110, 0.3);
+  background: rgba(15, 118, 110, 0.06);
+  transform: translateY(-1px);
+}
+
+.profile-btn--save {
+  background: linear-gradient(135deg, #0f766e, #0b4f4b);
+  color: #fff;
+  border-color: transparent;
+}
+
+.profile-btn--save:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(15, 118, 110, 0.3);
+}
+
+.profile-btn--save:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.profile-btn--cancel {
+  background: var(--surface-soft);
+  color: var(--muted);
+}
+
+.profile-btn--cancel:hover {
+  color: var(--text);
+  border-color: rgba(15, 118, 110, 0.2);
+}
+
+/* ── Details Grid ── */
+.profile-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  animation: viewFadeIn 240ms ease;
+}
+
+.profile-detail-item {
+  padding: 1.05rem 1.2rem;
+  border: 1px solid rgba(207, 217, 230, 0.95);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+  display: grid;
+  gap: 0.35rem;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.profile-detail-item:hover {
+  border-color: rgba(15, 118, 110, 0.18);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
+}
+
+.profile-detail-item--wide {
+  grid-column: 1 / -1;
+}
+
+.profile-detail-item__label {
+  font-size: 0.73rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.profile-detail-item__value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ── Edit Form ── */
+.profile-edit-form {
+  display: grid;
+  gap: 1rem;
+  animation: viewFadeIn 240ms ease;
+}
+
+.profile-edit-form__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem;
+}
+
+.profile-edit-form__field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.profile-edit-form__field span {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.profile-edit-form__field input {
+  width: 100%;
+  border: 1px solid #cfd9e6;
+  border-radius: 14px;
+  padding: 0.85rem 0.95rem;
+  background: #ffffff;
+  color: var(--text);
+  font: inherit;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.profile-edit-form__field input:focus {
+  outline: none;
+  border-color: rgba(15, 118, 110, 0.45);
+  box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.08);
+}
+
+.profile-edit-form__actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* ── Quick Actions (replaces dashboard-actions inside profile) ── */
+.profile-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.dashboard-action--danger {
+  color: var(--error);
+  border-color: rgba(185, 28, 28, 0.2);
+}
+
+.dashboard-action--danger:hover {
+  background: rgba(254, 242, 242, 0.95);
+  border-color: rgba(185, 28, 28, 0.35);
+  transform: translateY(-1px);
+}
+
+/* ── Profile Responsive ── */
+@media (max-width: 760px) {
+  .profile-hero-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .profile-hero-card__left {
+    flex-direction: column;
+  }
+
+  .profile-details-grid,
+  .profile-edit-form__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-detail-item--wide {
+    grid-column: auto;
+  }
+
+  .profile-edit-form__actions {
+    flex-direction: column;
+  }
+
+  .profile-quick-actions {
+    flex-direction: column;
+  }
+
+  .profile-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

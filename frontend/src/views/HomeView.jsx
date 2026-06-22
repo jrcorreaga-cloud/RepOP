@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { loginDemo, checkStatus, registerUser, setAuthToken, clearAuthToken } from "../controllers/apiController";
+import { UserProfile } from "../models/userProfileModel";
 import "../styles/login.css";
 
 const MAIN_NAV_ITEMS = [
@@ -35,6 +36,8 @@ export default function HomeView() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [backendStatus, setBackendStatus] = useState("Verificando conexión con backend...");
     const userMenuRef = useRef(null);
+    const [profileEditMode, setProfileEditMode] = useState(false);
+    const [profileFormData, setProfileFormData] = useState({ name: "", phone: "" });
 
     useEffect(() => {
         const checkBackend = async () => {
@@ -91,6 +94,8 @@ export default function HomeView() {
 
         return `${firstInitial}${secondInitial}`.toUpperCase();
     }, [authUser]);
+
+    const userProfile = useMemo(() => UserProfile.fromAuthUser(authUser), [authUser]);
 
     const scrollToSection = (target) => {
         const section = document.getElementById(target);
@@ -188,11 +193,50 @@ export default function HomeView() {
     const handleLogout = () => {
         setAuthUser(null);
         setUserMenuOpen(false);
+        setProfileEditMode(false);
         clearAuthToken();
         try {
             localStorage.removeItem("user");
         } catch (e) {}
         setStatus({ type: "idle", message: "Sesión cerrada. Puedes volver a ingresar." });
+    };
+
+    const handleProfileEditToggle = () => {
+        if (!profileEditMode) {
+            setProfileFormData({
+                name: authUser?.name || "",
+                phone: authUser?.phone || "",
+            });
+        }
+        setProfileEditMode((prev) => !prev);
+    };
+
+    const handleProfileFormChange = (event) => {
+        const { name, value } = event.target;
+        setProfileFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleProfileSave = async (event) => {
+        event.preventDefault();
+        setIsSubmitting(true);
+
+        try {
+            const updatedUser = {
+                ...authUser,
+                name: profileFormData.name.trim() || authUser.name,
+                phone: profileFormData.phone.trim(),
+            };
+            setAuthUser(updatedUser);
+            try {
+                localStorage.setItem("user", JSON.stringify(updatedUser));
+            } catch (e) {}
+            setProfileEditMode(false);
+            setStatus({ type: "success", message: "Perfil atualizado com sucesso." });
+        } catch (error) {
+            setStatus({ type: "error", message: error.message });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const renderAuthShell = () => (
@@ -374,26 +418,105 @@ export default function HomeView() {
                 <section className="dashboard-section dashboard-section--profile" id="meu-perfil">
                     <div className="dashboard-section__header">
                         <span>Meu Perfil</span>
-                        <h2>Conta ativa e opções rápidas</h2>
+                        <h2>Informações da conta</h2>
                     </div>
 
-                    <article className="profile-card">
-                        <div className="profile-card__avatar" aria-hidden="true">
-                            {userInitials}
+                    <article className="profile-hero-card">
+                        <div className="profile-hero-card__left">
+                            <div className="profile-hero-card__avatar" aria-hidden="true">
+                                {userProfile?.initials || userInitials}
+                            </div>
+                            <div className="profile-hero-card__info">
+                                <strong>{authUser?.name ?? "Usuário logado"}</strong>
+                                <span className="profile-hero-card__email">{authUser?.email ?? formData.email}</span>
+                                <div className="profile-hero-card__badges">
+                                    <span className="profile-badge profile-badge--role">
+                                        {userProfile?.roleIcon} {userProfile?.roleLabel || authUser?.role || "Sem função"}
+                                    </span>
+                                    {userProfile?.isUfopEmail ? (
+                                        <span className="profile-badge profile-badge--ufop">✓ UFOP Verificado</span>
+                                    ) : null}
+                                </div>
+                            </div>
                         </div>
-                        <div className="profile-card__content">
-                            <strong>{authUser?.name ?? "Usuário logado"}</strong>
-                            <span>{authUser?.email ?? formData.email}</span>
-                            <p>Usa o menu superior para voltar às áreas principais, abrir favoritos ou sair da sessão.</p>
+                        <div className="profile-hero-card__right">
+                            {!profileEditMode ? (
+                                <button type="button" className="profile-btn profile-btn--edit" onClick={handleProfileEditToggle}>
+                                    ✎ Editar perfil
+                                </button>
+                            ) : null}
                         </div>
                     </article>
 
-                    <div className="dashboard-actions" id="favoritos">
+                    {!profileEditMode ? (
+                        <div className="profile-details-grid">
+                            <div className="profile-detail-item">
+                                <span className="profile-detail-item__label">Nome completo</span>
+                                <span className="profile-detail-item__value">{authUser?.name || "—"}</span>
+                            </div>
+                            <div className="profile-detail-item">
+                                <span className="profile-detail-item__label">Email</span>
+                                <span className="profile-detail-item__value">{authUser?.email || "—"}</span>
+                            </div>
+                            <div className="profile-detail-item">
+                                <span className="profile-detail-item__label">Telefone</span>
+                                <span className="profile-detail-item__value">{authUser?.phone || "Não informado"}</span>
+                            </div>
+                            <div className="profile-detail-item">
+                                <span className="profile-detail-item__label">Função</span>
+                                <span className="profile-detail-item__value">{userProfile?.roleIcon} {userProfile?.roleLabel || "—"}</span>
+                            </div>
+                            <div className="profile-detail-item profile-detail-item--wide">
+                                <span className="profile-detail-item__label">Membro desde</span>
+                                <span className="profile-detail-item__value">{userProfile?.formattedRegistrationDate || "—"}</span>
+                            </div>
+                        </div>
+                    ) : (
+                        <form className="profile-edit-form" onSubmit={handleProfileSave}>
+                            <div className="profile-edit-form__grid">
+                                <label className="profile-edit-form__field">
+                                    <span>Nome completo</span>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={profileFormData.name}
+                                        onChange={handleProfileFormChange}
+                                        placeholder="Seu nome completo"
+                                        autoComplete="name"
+                                    />
+                                </label>
+                                <label className="profile-edit-form__field">
+                                    <span>Telefone</span>
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        value={profileFormData.phone}
+                                        onChange={handleProfileFormChange}
+                                        placeholder="+55 31 99999-9999"
+                                        autoComplete="tel"
+                                    />
+                                </label>
+                            </div>
+                            <div className="profile-edit-form__actions">
+                                <button type="submit" className="profile-btn profile-btn--save" disabled={isSubmitting}>
+                                    {isSubmitting ? "Salvando..." : "Salvar alterações"}
+                                </button>
+                                <button type="button" className="profile-btn profile-btn--cancel" onClick={handleProfileEditToggle}>
+                                    Cancelar
+                                </button>
+                            </div>
+                        </form>
+                    )}
+
+                    <div className="profile-quick-actions" id="favoritos">
                         <button type="button" className="dashboard-action" onClick={() => setStatus({ type: "success", message: "Abrindo favoritos no protótipo." })}>
-                            Favoritos
+                            ★ Favoritos
                         </button>
                         <button type="button" className="dashboard-action" id="configuracoes" onClick={() => setStatus({ type: "success", message: "Abrindo configurações no protótipo." })}>
-                            Configurações
+                            ⚙ Configurações
+                        </button>
+                        <button type="button" className="dashboard-action dashboard-action--danger" onClick={handleLogout}>
+                            Encerrar sessão
                         </button>
                     </div>
                 </section>
