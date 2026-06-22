@@ -1,29 +1,66 @@
-# Rutas de autenticación demo. Por ahora solo sirven para maquillar el flujo de login.
+# Auth controllers: Manejo real de JWT y registro de usuarios en DB.
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends, status
+from sqlalchemy.orm import Session
 
-from app.models.republica_model import LoginRequest, LoginResponse
+from app.core.database import get_db
+from app.core.security import get_password_hash, verify_password, create_access_token
+from app.models.usuario_model import Usuario
+from app.schemas.usuario_schema import UsuarioCreate, UsuarioResponse
+from app.schemas.auth_schema import LoginRequest, LoginResponse
 
 router = APIRouter()
 
 
+@router.post("/register", response_model=UsuarioResponse, status_code=status.HTTP_201_CREATED)
+def register(user_in: UsuarioCreate, db: Session = Depends(get_db)):
+    # Evitamos duplicados, el correo es la llave para el login
+    user_exists = db.query(Usuario).filter(Usuario.correo == user_in.correo).first()
+    if user_exists:
+        raise HTTPException(status_code=400, detail="Este correo ya está registrado en el sistema")
+
+    # Guardamos siempre el hash, nunca el plain text
+    hashed_password = get_password_hash(user_in.contrasenia)
+    
+    new_user = Usuario(
+        nombre=user_in.nombre,
+        correo=user_in.correo,
+        contrasenia=hashed_password,
+        telefono=user_in.telefono,
+        rol=user_in.rol
+    )
+    
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    
+    return new_user
+
+
 @router.post("/login", response_model=LoginResponse)
-def login(payload: LoginRequest):
-    email = payload.email.strip()
-    password = payload.password.strip()
+def login(payload: LoginRequest, db: Session = Depends(get_db)):
+    # Buscamos al usuario por correo
+    user = db.query(Usuario).filter(Usuario.correo == payload.email).first()
+    
+    # Validamos password contra el hash
+    if not user or not verify_password(payload.password, user.contrasenia):
+        # 401 para evitar enumeración de usuarios
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="Credenciales inválidas"
+        )
 
-    if not email or not password:
-        raise HTTPException(status_code=400, detail="Email y contraseña son obligatorios")
-
-    display_name = email.split("@")[0].replace(".", " ").replace("_", " ").title()
+    # JWT payload
+    access_token = create_access_token(data={"sub": user.correo})
 
     return LoginResponse(
-        access_token="demo-token-repop",
+        access_token=access_token,
         token_type="bearer",
         user={
-            "name": display_name,
-            "email": email,
-            "role": "explorador",
+            "id": user.id_usuario,
+            "name": user.nombre,
+            "email": user.correo,
+            "role": user.rol,
         },
-        message="Login demo exitoso. Pronto conectaremos autenticación real.",
+        message="Login exitoso"
     )
