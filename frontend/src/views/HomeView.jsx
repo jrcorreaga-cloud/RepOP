@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { loginDemo, checkStatus, registerUser } from "../controllers/apiController";
+import { loginDemo, checkStatus, registerUser, setAuthToken, clearAuthToken } from "../controllers/apiController";
 import "../styles/login.css";
 
 const MAIN_NAV_ITEMS = [
@@ -46,6 +46,19 @@ export default function HomeView() {
             }
         };
         checkBackend();
+    }, []);
+
+    useEffect(() => {
+        try {
+            const token = localStorage.getItem("token");
+            const userString = localStorage.getItem("user");
+            if (token && userString) {
+                setAuthToken(token);
+                setAuthUser(JSON.parse(userString));
+            }
+        } catch (e) {
+            // ignore
+        }
     }, []);
 
     useEffect(() => {
@@ -112,6 +125,14 @@ export default function HomeView() {
 
         try {
             const response = await loginDemo(formData);
+            // persist token + user
+            if (response.access_token) {
+                setAuthToken(response.access_token);
+            }
+            try {
+                localStorage.setItem("user", JSON.stringify(response.user));
+            } catch (e) {}
+
             setAuthUser(response.user);
             setUserMenuOpen(false);
             setStatus({ type: "success", message: response.message });
@@ -167,6 +188,10 @@ export default function HomeView() {
     const handleLogout = () => {
         setAuthUser(null);
         setUserMenuOpen(false);
+        clearAuthToken();
+        try {
+            localStorage.removeItem("user");
+        } catch (e) {}
         setStatus({ type: "idle", message: "Sesión cerrada. Puedes volver a ingresar." });
     };
 
