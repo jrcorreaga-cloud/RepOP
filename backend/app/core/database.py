@@ -10,12 +10,15 @@ load_dotenv()
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not SQLALCHEMY_DATABASE_URL:
-    # Fallback para desarrollo local si no hay .env
-    SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root@localhost:3306/republicas_db"
+    # Fallback para desarrollo local si no hay .env ni Docker/MySQL disponible.
+    SQLALCHEMY_DATABASE_URL = "sqlite:///./repop.db"
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL
-)
+engine_kwargs = {}
+
+if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
+    engine_kwargs["connect_args"] = {"check_same_thread": False}
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL, **engine_kwargs)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()

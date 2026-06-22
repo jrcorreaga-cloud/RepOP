@@ -18,6 +18,24 @@ export const loginDemo = async (credentials) => {
     return data;
 };
 
+export const registerUser = async (userData) => {
+    const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        throw new Error(data.detail ?? "No se pudo registrar el usuario");
+    }
+
+    return data;
+};
+
 export const checkStatus = async () => {
     const res = await fetch(`${API_BASE_URL}/api/status`, {
         method: "GET",
