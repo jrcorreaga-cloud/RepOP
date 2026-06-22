@@ -43,7 +43,7 @@ Um banco **MySQL 8.0** rodando em container isolado. Guarda tudo que precisa per
 ---
 ## 3. Como os Componentes se Comunicam
 
-![Diagrama de Arquitetura do RepOP](../imagenes/arquitectura.jpeg)
+![Diagrama de Arquitetura do RepOP](./imagenes/arquitectura.jpeg)
 
 **Passo a passo:**
 
