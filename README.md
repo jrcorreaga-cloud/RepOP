@@ -38,6 +38,12 @@ O acompanhamento das tarefas e o progresso do projeto são gerenciados no quadro
 - **Banco de Dados:** MySQL
 - **Contêineres:** Docker e Docker Compose para facilitar deploys e testes.
 
+## 🗄️ Diagrama Entidade-Relacionamento
+
+O diagrama ER do banco de dados do RepOP está disponível abaixo:
+
+![Diagrama ER RepOP](docs/imagenes/diagrama%20ER%20REPOop.png)
+
 ---
 
 ## 🚀 Guia de Início Rápido (Localhost)
